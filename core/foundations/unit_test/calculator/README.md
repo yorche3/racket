@@ -1,6 +1,6 @@
 # Calculator — Racket
 
-Implementación de la especificación [03_Unit_Test_Calculator](https://yorche3.github.io/programming_languages/core/foundations/03_Unit_Test_Calculator/) en **Racket**, con **rackunit** como framework de pruebas unitarias — la biblioteca de tests estándar de Racket — y **`raco test`** como runner.
+Implementación de la especificación [03_Unit_Test_Calculator](https://yorche3.github.io/programming_languages/core/foundations/03_Unit_Test_Calculator/) en **Racket**, con **rackunit** como framework de pruebas unitarias — la biblioteca de tests estándar de Racket — y un `run_tests.rkt` con **rackunit/text-ui** como runner.
 
 Operaciones aritméticas básicas (`addition`, `subtraction`, `multiplication`, `division`, `modulus`) con implementaciones intuitivas y educativas, validadas mediante pruebas unitarias.
 
@@ -11,7 +11,8 @@ Operaciones aritméticas básicas (`addition`, `subtraction`, `multiplication`, 
 | Archivo | Propósito |
 |---------|-----------|
 | [`src/calculator.rkt`](src/calculator.rkt) | Código fuente: módulo Racket que provee las 5 funciones. |
-| [`test/calculator_test.rkt`](test/calculator_test.rkt) | Suite de pruebas: 5 `check-equal?` con rackunit. |
+| [`test/calculator_test.rkt`](test/calculator_test.rkt) | Suite de pruebas: 5 `test-case` con rackunit. |
+| [`test/run_tests.rkt`](test/run_tests.rkt) | Punto de entrada: ejecuta la suite con `run-tests`. |
 | [`.gitignore`](.gitignore) | Ignora los artefactos compilados (`compiled/`). |
 
 **Estructura de directorios esperada:**
@@ -21,7 +22,8 @@ calculator/
 ├── src/
 │   └── calculator.rkt         # Código fuente
 ├── test/
-│   └── calculator_test.rkt    # Suite de pruebas
+│   ├── calculator_test.rkt    # Suite de pruebas
+│   └── run_tests.rkt          # Punto de entrada
 ├── .gitignore
 └── README.md                  # Este archivo
 ```
@@ -30,9 +32,9 @@ calculator/
 
 ## 🛠️ Enfoque y construcción / Approach & Build
 
-**ES:** El proyecto se creó manualmente, sin herramientas de scaffolding. Racket tiene un **sistema de módulos real**: `src/calculator.rkt` declara `(provide ...)` las 5 funciones y la suite las importa con `(require "../src/calculator.rkt")`. Las pruebas usan **rackunit** (incluida en la distribución estándar de Racket) y se ejecutan con **`raco test`**, el runner oficial — por eso no se crea el `run_tests` del pseudocódigo (la especificación lo pide solo si el lenguaje no lo incluye).
+**ES:** El proyecto se creó manualmente, sin herramientas de scaffolding. Racket tiene un **sistema de módulos real**: `src/calculator.rkt` declara `(provide ...)` las 5 funciones y la suite las importa con `(require "../src/calculator.rkt")`. Las pruebas usan **rackunit** (incluida en la distribución estándar de Racket): la suite se define con `test-suite`/`test-case` y se exporta con `(provide calculator-suite)`; el runner `test/run_tests.rkt` la ejecuta con `run-tests` de **rackunit/text-ui**.
 
-**EN:** The project was created manually, without scaffolding tools. Racket has a **real module system**: `src/calculator.rkt` declares `(provide ...)` for the 5 functions and the suite imports them with `(require "../src/calculator.rkt")`. Tests use **rackunit** (bundled with the standard Racket distribution) and run with **`raco test`**, the official runner — that's why the pseudocode's `run_tests` is not created (the specification asks for it only if the language doesn't include one).
+**EN:** The project was created manually, without scaffolding tools. Racket has a **real module system**: `src/calculator.rkt` declares `(provide ...)` for the 5 functions and the suite imports them with `(require "../src/calculator.rkt")`. Tests use **rackunit** (bundled with the standard Racket distribution): the suite is defined with `test-suite`/`test-case` and exported with `(provide calculator-suite)`; the `test/run_tests.rkt` runner executes it with `run-tests` from **rackunit/text-ui**.
 
 ### Inicialización / Initialization
 
@@ -97,21 +99,45 @@ No se requieren archivos de configuración de build. El módulo se comparte medi
 
 ### `test/calculator_test.rkt` — Suite rackunit
 
-**ES:** Un `check-equal?` por operación (5 checks, uno por función), cada uno con su mensaje. La línea `(require ...)` importa el módulo `calculator` desde `src/`.
+**ES:** Un `test-case` por operación (5 casos, uno por función), cada uno con su `check-equal?`. La suite completa se exporta con `(provide calculator-suite)` para que el runner la ejecute.
 
-**EN:** One `check-equal?` per operation (5 checks, one per function), each with its message. The `(require ...)` line imports the `calculator` module from `src/`.
+**EN:** One `test-case` per operation (5 cases, one per function), each with its `check-equal?`. The whole suite is exported with `(provide calculator-suite)` so the runner can execute it.
 
 ```racket
 #lang racket
 
-(require rackunit
-         "../src/calculator.rkt")
+(require rackunit)
+(require "../src/calculator.rkt")
 
-(check-equal? (addition 2 3) 5 "addition")
-(check-equal? (subtraction 5 2) 3 "subtraction")
-(check-equal? (multiplication 3 4) 12 "multiplication")
-(check-equal? (division 10 3) 3 "division")
-(check-equal? (modulus 10 3) 1 "modulus")
+(provide calculator-suite)
+
+(define calculator-suite
+  (test-suite "Calculator"
+    (test-case "addition"
+      (check-equal? (addition 2 3) 5))
+
+    (test-case "subtraction"
+      (check-equal? (subtraction 5 2) 3))
+
+    (test-case "multiplication"
+      (check-equal? (multiplication 3 4) 12))
+
+    (test-case "division"
+      (check-equal? (division 10 3) 3))
+
+    (test-case "modulus"
+      (check-equal? (modulus 10 3) 1))))
+```
+
+### `test/run_tests.rkt` — Punto de entrada
+
+```racket
+#lang racket
+
+(require rackunit/text-ui)
+(require "./calculator_test.rkt")
+
+(run-tests calculator-suite)
 ```
 
 ---
@@ -135,18 +161,17 @@ raco --version
 
 ```bash
 cd racket/core/foundations/unit_test/calculator
-raco test test/calculator_test.rkt
+racket test/run_tests.rkt
 ```
 
 ### Salida esperada / Expected output
 
 ```text
-raco test: (file "test/calculator_test.rkt")
-5 tests passed
+5 success(es) 0 failure(s) 0 error(s) 5 test(s) run
 ```
 
-> **ES:** `5 tests passed` confirma que las 5 operaciones se verificaron correctamente (equivale al `Tests run: 5, Passed: 5, Failed: 0` de la especificación).
-> **EN:** `5 tests passed` confirms that all 5 operations were verified correctly (equivalent to the specification's `Tests run: 5, Passed: 5, Failed: 0`).
+> **ES:** Los 5 `test-case` pasan sin fallos ni errores (equivale al `Tests run: 5, Passed: 5, Failed: 0` de la especificación).
+> **EN:** The 5 `test-case`s pass with no failures or errors (equivalent to the specification's `Tests run: 5, Passed: 5, Failed: 0`).
 
 ---
 
@@ -158,8 +183,8 @@ raco test: (file "test/calculator_test.rkt")
 - **EN:** The `let loop`s are tail calls: Racket guarantees TCO, so these recursive loops consume no stack.
 - **ES:** La división por cero no se maneja en este ejemplo educativo (según el pseudocódigo de la especificación); las pruebas usan valores válidos.
 - **EN:** Division by zero is not handled in this educational example (per the specification's pseudocode); tests use valid values.
-- **ES:** No se usa `run_tests.rkt` porque `raco test` ya es el punto de entrada del lenguaje (la especificación pide crearlo solo si el framework no lo incluye).
-- **EN:** `run_tests.rkt` is not used because `raco test` is already the language's entry point (the specification asks to create it only if the framework doesn't include one).
+- **ES:** La suite se organiza con `test-suite`/`test-case` (un caso por función) y se exporta con `provide`; el runner `run_tests.rkt` la ejecuta con `run-tests` de `rackunit/text-ui`.
+- **EN:** The suite is organized with `test-suite`/`test-case` (one case per function) and exported with `provide`; the `run_tests.rkt` runner executes it with `run-tests` from `rackunit/text-ui`.
 
 ---
 
