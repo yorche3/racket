@@ -63,8 +63,8 @@
   (test-suite
    "naive_sort"
    (test-case "selection_sort"
-     (assert-sorts-all-cases selection_sort "selection_sort"))
+     (assert-sorts-all-cases selection-sort "selection_sort"))
    (test-case "bubble_sort"
-     (assert-sorts-all-cases bubble_sort "bubble_sort"))
+     (assert-sorts-all-cases bubble-sort "bubble_sort"))
    (test-case "insertion_sort"
-     (assert-sorts-all-cases insertion_sort "insertion_sort"))))
+     (assert-sorts-all-cases insertion-sort "insertion_sort"))))
