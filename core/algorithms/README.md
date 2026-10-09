@@ -11,6 +11,7 @@ Los módulos de esta fase trabajan sobre **listas inmutables**, que se recorren 
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `racket test/run_tests.rkt` + rackunit | 3 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `raco test -x .` + rackunit | 3 | ✅ |
 
 ---
 
@@ -18,13 +19,19 @@ Los módulos de esta fase trabajan sobre **listas inmutables**, que se recorren 
 
 ```text
 algorithms/
-└── naive_sort/                      # 05_Naive_Sort
-    ├── src/
-    │   └── naive_sort.rkt           # 3 funciones del contrato (provide)
-    ├── test/
-    │   ├── naive_sort_tests.rkt     # 3 test-case × 8 checks
-    │   └── run_tests.rkt            # Punto de entrada
-    ├── .gitignore                   # Ignora compiled/
+├── naive_sort/                      # 05_Naive_Sort
+│   ├── src/
+│   │   └── naive_sort.rkt           # 3 funciones del contrato (provide)
+│   ├── test/
+│   │   ├── naive_sort_tests.rkt     # 3 test-case × 8 checks
+│   │   └── run_tests.rkt            # Punto de entrada
+│   ├── .gitignore                   # Ignora compiled/
+│   └── README.md
+└── data_structures_basics/          # 06_Data_Structures_Basics
+    ├── data_structures_basics-lib/  # Código fuente (4 structs, 23 funciones)
+    ├── data_structures_basics-test/ # Suites (53 checks)
+    ├── data_structures_basics-doc/  # Documentación (Scribble)
+    ├── Makefile                     # Build estándar de raco new
     └── README.md
 ```
 
@@ -57,6 +64,10 @@ algorithms/
 # Naive Sort Tests
 cd naive_sort
 racket test/run_tests.rkt
+
+# Data Structures Basics Tests
+cd data_structures_basics
+raco test -x .
 ```
 
 ---

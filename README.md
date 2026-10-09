@@ -11,7 +11,7 @@ biblioteca de tests estándar de Racket (incluida en la distribución oficial).
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
-| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics` |
 
 ---
 
@@ -37,6 +37,10 @@ racket test/run_tests.rkt
 # Naive Sort Tests
 cd core/algorithms/naive_sort
 racket test/run_tests.rkt
+
+# Data Structures Basics Tests
+cd core/algorithms/data_structures_basics
+raco test -x .
 ```
 
 ---
