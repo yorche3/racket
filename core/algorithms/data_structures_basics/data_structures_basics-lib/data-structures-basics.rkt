@@ -13,8 +13,9 @@
 ;;     admite campos con valor por defecto, así que el constructor no puede ser el `init`
 ;;     del contrato sin pedir los enlaces ausentes.
 ;;   - Los structs son `#:mutable`, así que las operaciones que el pseudocódigo escribe
-;;     como asignaciones trabajan sobre la misma instancia; las que no comunican resultado
-;;     (`insert_head`, `insert_tail`, `push`, `enqueue`) devuelven `(void)`.
+;;     como asignaciones trabajan sobre la misma instancia; las inserciones (`insert_head`,
+;;     `insert_tail`, `push`, `enqueue`) devuelven el nodo insertado: la especificación fija
+;;     su efecto sobre el tamaño, no su resultado.
 ;;   - El indicador natural de fallo es **`#f`**: la ausencia del enlace de un `Node` y las
 ;;     lecturas que pueden fallar (`get_head`, `pop`, `peek`, `dequeue`). No es un entero,
 ;;     así que los valores de prueba (enteros positivos) no colisionan con él, y es lo que
@@ -25,10 +26,10 @@
 ;; El contrato vive en `data_structures_basics-lib/data-structures-basics.rkt`: el nombre
 ;; del módulo con guiones, que es la convención de nombres de Racket.
 ;;
-;; Esqueleto del contrato (paso 4b): los constructores —el `init` del contrato— y los
-;; accesores de `Node` ya funcionan, que es lo que necesita la suite del 4c para construir
-;; sus escenarios; el algoritmo de las operaciones de las tres estructuras es del paso 5,
-;; así que mientras no lo haya cada operación devuelve su indicador.
+;; Implementación (paso 5): los cuatro `init`, los accesores de `Node`, las siete
+;; operaciones de `LinkedList`, las cinco de `Stack` y las cinco de `Queue` siguen el
+;; pseudocódigo de la especificación. `get_head`, `pop`, `peek` y `dequeue` devuelven el
+;; **valor** (o `#f` si la estructura está vacía) y `delete` devuelve éxito o fallo.
 
 ;; El `Node` es la única celda enlazada del módulo: `LinkedList`, `Stack` y `Queue` usan
 ;; este mismo struct y gestionan sus propios punteros.
@@ -70,27 +71,53 @@
 
 ;; Valor de la cabeza, o #f con la lista vacía (`get_head`).
 (define (linked_list_get_head linked_list)
-  #f)
+  (let ((head (linked_list-head linked_list)))
+    (if head (node-value head) #f)))
 
 ;; Inserta al principio de la lista (`insert_head`).
 (define (linked_list_insert_head linked_list value)
-  (void))
+  (let ((new-node (node_init value)))
+    (set-node-next! new-node (linked_list-head linked_list))
+    (set-linked_list-head! linked_list new-node)
+    (when (not (linked_list-tail linked_list))
+      (set-linked_list-tail! linked_list new-node))
+    (set-linked_list-count! linked_list (+ 1 (linked_list-count linked_list)))
+    new-node))
 
 ;; Inserta al final de la lista (`insert_tail`).
 (define (linked_list_insert_tail linked_list value)
-  (void))
+  (let ((new-node (node_init value)))
+    (if (linked_list-tail linked_list)
+        (set-node-next! (linked_list-tail linked_list) new-node)
+        (set-linked_list-head! linked_list new-node))
+    (set-linked_list-tail! linked_list new-node)
+    (set-linked_list-count! linked_list (+ 1 (linked_list-count linked_list)))
+    new-node))
 
 ;; Elimina la primera aparición: #t si estaba, #f si no (`delete`).
+;; Recorre desde la cabeza en O(n) conservando el nodo anterior, y al borrar el último
+;; nodo deja la cola en el anterior, que es lo que el pseudocódigo hace con `tail`.
 (define (linked_list_delete linked_list value)
-  #f)
+  (let loop ((previous #f) (current (linked_list-head linked_list)))
+    (cond
+      ((not current) #f)
+      ((= (node-value current) value)
+       (if previous
+           (set-node-next! previous (node-next current))
+           (set-linked_list-head! linked_list (node-next current)))
+       (when (eq? (linked_list-tail linked_list) current)
+         (set-linked_list-tail! linked_list previous))
+       (set-linked_list-count! linked_list (- (linked_list-count linked_list) 1))
+       #t)
+      (else (loop current (node-next current))))))
 
 ;; Cierto exactamente cuando no hay nodos (`is_empty`).
 (define (linked_list_is_empty linked_list)
-  #f)
+  (not (linked_list-head linked_list)))
 
 ;; Número de nodos (`size`).
 (define (linked_list_size linked_list)
-  0)
+  (linked_list-count linked_list))
 
 ;; ---------------------------------------------------------------------------
 ;; Stack — LIFO independiente: no envuelve LinkedList
@@ -101,21 +128,30 @@
 
 ;; Apila sobre el tope (`push`).
 (define (stack_push stack value)
-  (void))
+  (let ((new-node (node_init value)))
+    (set-node-next! new-node (stack-top stack))
+    (set-stack-top! stack new-node)
+    (set-stack-count! stack (+ 1 (stack-count stack)))
+    new-node))
 
-;; Extrae el tope, o #f con la pila vacía (`pop`).
+;; Extrae el tope y devuelve su valor, o #f con la pila vacía (`pop`).
 (define (stack_pop stack)
-  #f)
+  (let ((top (stack-top stack)))
+    (when top
+      (set-stack-top! stack (node-next top))
+      (set-stack-count! stack (- (stack-count stack) 1)))
+    (if top (node-value top) #f)))
 
-;; Observa el tope sin extraerlo, o #f con la pila vacía (`peek`).
+;; Observa el valor del tope sin extraerlo, o #f con la pila vacía (`peek`).
 (define (stack_peek stack)
-  #f)
+  (let ((top (stack-top stack)))
+    (if top (node-value top) #f)))
 
 (define (stack_is_empty stack)
-  #f)
+  (not (stack-top stack)))
 
 (define (stack_size stack)
-  0)
+  (stack-count stack))
 
 ;; ---------------------------------------------------------------------------
 ;; Queue — FIFO independiente: no envuelve LinkedList
@@ -124,20 +160,34 @@
 (define (queue_init)
   (queue #f #f 0))
 
-;; Añade por el final (`enqueue`).
+;; Añade por el final (`enqueue`). Los punteros del contrato son `front` y `rear`.
 (define (queue_enqueue queue value)
-  (void))
+  (let ((new-node (node_init value)))
+    (if (queue-rear queue)
+        (set-node-next! (queue-rear queue) new-node)
+        (set-queue-front! queue new-node))
+    (set-queue-rear! queue new-node)
+    (set-queue-count! queue (+ 1 (queue-count queue)))
+    new-node))
 
-;; Extrae el frente, o #f con la cola vacía (`dequeue`).
+;; Extrae el frente y devuelve su valor, o #f con la cola vacía (`dequeue`).
+;; Al vaciarse, el `rear` vuelve a ausente junto con el `front`.
 (define (queue_dequeue queue)
-  #f)
+  (let ((front (queue-front queue)))
+    (when front
+      (set-queue-front! queue (node-next front))
+      (when (not (queue-front queue))
+        (set-queue-rear! queue #f))
+      (set-queue-count! queue (- (queue-count queue) 1)))
+    (if front (node-value front) #f)))
 
-;; Observa el frente sin extraerlo, o #f con la cola vacía (`peek`).
+;; Observa el valor del frente sin extraerlo, o #f con la cola vacía (`peek`).
 (define (queue_peek queue)
-  #f)
+  (let ((front (queue-front queue)))
+    (if front (node-value front) #f)))
 
 (define (queue_is_empty queue)
-  #f)
+  (not (queue-front queue)))
 
 (define (queue_size queue)
-  0)
+  (queue-count queue))
