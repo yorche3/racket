@@ -10,8 +10,8 @@
 ;; Si la entrada es nula o inválida devuelve `#f` como indicador de fallo; si
 ;; está vacía devuelve la misma lista vacía. No lanza excepciones.
 ;;
-;; Implementación pendiente: la escribe el autor. Esta delegación solo genera el
-;; esqueleto y las pruebas unitarias.
+;; Implementación completa: los tres algoritmos siguen el pseudocódigo de la
+;; especificación y ordenan una copia, sin mutar la lista de entrada.
 (provide
     selection-sort
     bubble-sort

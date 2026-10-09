@@ -5,11 +5,14 @@
 ;; Especificación: 06_Data_Structures_Basics
 ;;
 ;; Contrato Racket: cuatro structs y una función por operación del contrato, con los
-;; nombres en snake_case del módulo homologado (`numbers/`, `naive_sort/`).
+;; identificadores en **kebab-case** (`linked-list-insert-head`, `stack-pop`), que es la
+;; convención de nombres de Racket. La especificación nombra las operaciones en snake_case
+;; (`insert_head`, `pop`): ese nombre se conserva en la prosa de este archivo y en los
+;; mensajes de la suite, no en los identificadores.
 ;;
 ;; Adecuaciones:
-;;   - `init` es una función por estructura —`node_init`, `linked_list_init`, `stack_init`,
-;;     `queue_init`— que devuelve la instancia ya inicializada: el `struct` de Racket no
+;;   - `init` es una función por estructura —`node-init`, `linked-list-init`, `stack-init`,
+;;     `queue-init`— que devuelve la instancia ya inicializada: el `struct` de Racket no
 ;;     admite campos con valor por defecto, así que el constructor no puede ser el `init`
 ;;     del contrato sin pedir los enlaces ausentes.
 ;;   - Los structs son `#:mutable`, así que las operaciones que el pseudocódigo escribe
@@ -23,8 +26,8 @@
 ;;   - `delete` devuelve un booleano (éxito o fallo) y `is_empty`, un booleano. `size`
 ;;     devuelve el número de nodos, que es 0 con la estructura vacía.
 ;;
-;; El contrato vive en `data_structures_basics-lib/data-structures-basics.rkt`: el nombre
-;; del módulo con guiones, que es la convención de nombres de Racket.
+;; El contrato vive en `data_structures_basics-lib/data-structures-basics.rkt`: nombre de
+;; archivo con guiones, que es la convención de nombres de Racket.
 ;;
 ;; Implementación (paso 5): los cuatro `init`, los accesores de `Node`, las siete
 ;; operaciones de `LinkedList`, las cinco de `Stack` y las cinco de `Queue` siguen el
@@ -34,31 +37,31 @@
 ;; El `Node` es la única celda enlazada del módulo: `LinkedList`, `Stack` y `Queue` usan
 ;; este mismo struct y gestionan sus propios punteros.
 (struct node (value next) #:mutable #:transparent)
-(struct linked_list (head tail count) #:mutable #:transparent)
+(struct linked-list (head tail count) #:mutable #:transparent)
 (struct stack (top count) #:mutable #:transparent)
 (struct queue (front rear count) #:mutable #:transparent)
 
-(provide node_init node_get_value node_get_next node_set_next
-         linked_list_init linked_list_get_head linked_list_insert_head linked_list_insert_tail
-         linked_list_delete linked_list_is_empty linked_list_size
-         stack_init stack_push stack_pop stack_peek stack_is_empty stack_size
-         queue_init queue_enqueue queue_dequeue queue_peek queue_is_empty queue_size)
+(provide node-init node-get-value node-get-next node-set-next
+         linked-list-init linked-list-get-head linked-list-insert-head linked-list-insert-tail
+         linked-list-delete linked-list-is-empty linked-list-size
+         stack-init stack-push stack-pop stack-peek stack-is-empty stack-size
+         queue-init queue-enqueue queue-dequeue queue-peek queue-is-empty queue-size)
 
 ;; ---------------------------------------------------------------------------
 ;; Node — celda compartida: su init y sus accesores son parte del contrato
 ;; ---------------------------------------------------------------------------
 
-(define (node_init value)
+(define (node-init value)
   (node value #f))
 
-(define (node_get_value node)
+(define (node-get-value node)
   (node-value node))
 
-(define (node_get_next node)
+(define (node-get-next node)
   (node-next node))
 
 ;; Enlaza otro nodo y devuelve el propio nodo (`set_next`).
-(define (node_set_next node next)
+(define (node-set-next node next)
   (set-node-next! node next)
   node)
 
@@ -66,76 +69,76 @@
 ;; LinkedList
 ;; ---------------------------------------------------------------------------
 
-(define (linked_list_init)
-  (linked_list #f #f 0))
+(define (linked-list-init)
+  (linked-list #f #f 0))
 
 ;; Valor de la cabeza, o #f con la lista vacía (`get_head`).
-(define (linked_list_get_head linked_list)
-  (let ((head (linked_list-head linked_list)))
+(define (linked-list-get-head linked-list)
+  (let ((head (linked-list-head linked-list)))
     (if head (node-value head) #f)))
 
 ;; Inserta al principio de la lista (`insert_head`).
-(define (linked_list_insert_head linked_list value)
-  (let ((new-node (node_init value)))
-    (set-node-next! new-node (linked_list-head linked_list))
-    (set-linked_list-head! linked_list new-node)
-    (when (not (linked_list-tail linked_list))
-      (set-linked_list-tail! linked_list new-node))
-    (set-linked_list-count! linked_list (+ 1 (linked_list-count linked_list)))
+(define (linked-list-insert-head linked-list value)
+  (let ((new-node (node-init value)))
+    (set-node-next! new-node (linked-list-head linked-list))
+    (set-linked-list-head! linked-list new-node)
+    (when (not (linked-list-tail linked-list))
+      (set-linked-list-tail! linked-list new-node))
+    (set-linked-list-count! linked-list (+ 1 (linked-list-count linked-list)))
     new-node))
 
 ;; Inserta al final de la lista (`insert_tail`).
-(define (linked_list_insert_tail linked_list value)
-  (let ((new-node (node_init value)))
-    (if (linked_list-tail linked_list)
-        (set-node-next! (linked_list-tail linked_list) new-node)
-        (set-linked_list-head! linked_list new-node))
-    (set-linked_list-tail! linked_list new-node)
-    (set-linked_list-count! linked_list (+ 1 (linked_list-count linked_list)))
+(define (linked-list-insert-tail linked-list value)
+  (let ((new-node (node-init value)))
+    (if (linked-list-tail linked-list)
+        (set-node-next! (linked-list-tail linked-list) new-node)
+        (set-linked-list-head! linked-list new-node))
+    (set-linked-list-tail! linked-list new-node)
+    (set-linked-list-count! linked-list (+ 1 (linked-list-count linked-list)))
     new-node))
 
 ;; Elimina la primera aparición: #t si estaba, #f si no (`delete`).
 ;; Recorre desde la cabeza en O(n) conservando el nodo anterior, y al borrar el último
 ;; nodo deja la cola en el anterior, que es lo que el pseudocódigo hace con `tail`.
-(define (linked_list_delete linked_list value)
-  (let loop ((previous #f) (current (linked_list-head linked_list)))
+(define (linked-list-delete linked-list value)
+  (let loop ((previous #f) (current (linked-list-head linked-list)))
     (cond
       ((not current) #f)
       ((= (node-value current) value)
        (if previous
            (set-node-next! previous (node-next current))
-           (set-linked_list-head! linked_list (node-next current)))
-       (when (eq? (linked_list-tail linked_list) current)
-         (set-linked_list-tail! linked_list previous))
-       (set-linked_list-count! linked_list (- (linked_list-count linked_list) 1))
+           (set-linked-list-head! linked-list (node-next current)))
+       (when (eq? (linked-list-tail linked-list) current)
+         (set-linked-list-tail! linked-list previous))
+       (set-linked-list-count! linked-list (- (linked-list-count linked-list) 1))
        #t)
       (else (loop current (node-next current))))))
 
 ;; Cierto exactamente cuando no hay nodos (`is_empty`).
-(define (linked_list_is_empty linked_list)
-  (not (linked_list-head linked_list)))
+(define (linked-list-is-empty linked-list)
+  (not (linked-list-head linked-list)))
 
 ;; Número de nodos (`size`).
-(define (linked_list_size linked_list)
-  (linked_list-count linked_list))
+(define (linked-list-size linked-list)
+  (linked-list-count linked-list))
 
 ;; ---------------------------------------------------------------------------
 ;; Stack — LIFO independiente: no envuelve LinkedList
 ;; ---------------------------------------------------------------------------
 
-(define (stack_init)
+(define (stack-init)
   (stack #f 0))
 
 ;; Apila sobre el tope (`push`).
-(define (stack_push stack value)
-  (let ((new-node (node_init value)))
+(define (stack-push stack value)
+  (let ((new-node (node-init value)))
     (set-node-next! new-node (stack-top stack))
     (set-stack-top! stack new-node)
     (set-stack-count! stack (+ 1 (stack-count stack)))
     new-node))
 
 ;; Extrae el tope y devuelve su valor, o #f con la pila vacía (`pop`).
-(define (stack_pop stack)
+(define (stack-pop stack)
   (let ((top (stack-top stack)))
     (when top
       (set-stack-top! stack (node-next top))
@@ -143,26 +146,26 @@
     (if top (node-value top) #f)))
 
 ;; Observa el valor del tope sin extraerlo, o #f con la pila vacía (`peek`).
-(define (stack_peek stack)
+(define (stack-peek stack)
   (let ((top (stack-top stack)))
     (if top (node-value top) #f)))
 
-(define (stack_is_empty stack)
+(define (stack-is-empty stack)
   (not (stack-top stack)))
 
-(define (stack_size stack)
+(define (stack-size stack)
   (stack-count stack))
 
 ;; ---------------------------------------------------------------------------
 ;; Queue — FIFO independiente: no envuelve LinkedList
 ;; ---------------------------------------------------------------------------
 
-(define (queue_init)
+(define (queue-init)
   (queue #f #f 0))
 
 ;; Añade por el final (`enqueue`). Los punteros del contrato son `front` y `rear`.
-(define (queue_enqueue queue value)
-  (let ((new-node (node_init value)))
+(define (queue-enqueue queue value)
+  (let ((new-node (node-init value)))
     (if (queue-rear queue)
         (set-node-next! (queue-rear queue) new-node)
         (set-queue-front! queue new-node))
@@ -172,7 +175,7 @@
 
 ;; Extrae el frente y devuelve su valor, o #f con la cola vacía (`dequeue`).
 ;; Al vaciarse, el `rear` vuelve a ausente junto con el `front`.
-(define (queue_dequeue queue)
+(define (queue-dequeue queue)
   (let ((front (queue-front queue)))
     (when front
       (set-queue-front! queue (node-next front))
@@ -182,12 +185,12 @@
     (if front (node-value front) #f)))
 
 ;; Observa el valor del frente sin extraerlo, o #f con la cola vacía (`peek`).
-(define (queue_peek queue)
+(define (queue-peek queue)
   (let ((front (queue-front queue)))
     (if front (node-value front) #f)))
 
-(define (queue_is_empty queue)
+(define (queue-is-empty queue)
   (not (queue-front queue)))
 
-(define (queue_size queue)
+(define (queue-size queue)
   (queue-count queue))

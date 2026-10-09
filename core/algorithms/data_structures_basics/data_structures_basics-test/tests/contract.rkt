@@ -12,9 +12,9 @@
 ;;
 ;; `raco test` recoge los `check-equal?` de los submodules `test` y los cuenta.
 
-(provide check_contract)
+(provide check-contract)
 
 (require rackunit)
 
-(define (check_contract message actual expected)
+(define (check-contract message actual expected)
   (check-equal? actual expected message))

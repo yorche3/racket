@@ -12,11 +12,11 @@ Cuatro estructuras construidas desde cero sobre un único `struct` `node` compar
 |---|---|
 | `data_structures_basics-lib/data-structures-basics.rkt` | Código fuente principal: los cuatro structs y las 23 funciones del contrato. |
 | `data_structures_basics-lib/info.rkt` | Metadatos de la colección de biblioteca. |
-| `data_structures_basics-test/tests/contract.rkt` | Ejecutor compartido `check_contract` (envuelve `check-equal?` con el mensaje de la casa). |
-| `data_structures_basics-test/tests/node_tests.rkt` | Casos de `Node` (4 checks). |
-| `data_structures_basics-test/tests/linked_list_tests.rkt` | Casos de `LinkedList` (19 checks). |
-| `data_structures_basics-test/tests/stack_tests.rkt` | Casos de `Stack` (15 checks). |
-| `data_structures_basics-test/tests/queue_tests.rkt` | Casos de `Queue` (15 checks). |
+| `data_structures_basics-test/tests/contract.rkt` | Ejecutor compartido `check-contract` (envuelve `check-equal?` con el mensaje de la casa). |
+| `data_structures_basics-test/tests/node-tests.rkt` | Casos de `Node` (4 checks). |
+| `data_structures_basics-test/tests/linked-list-tests.rkt` | Casos de `LinkedList` (19 checks). |
+| `data_structures_basics-test/tests/stack-tests.rkt` | Casos de `Stack` (15 checks). |
+| `data_structures_basics-test/tests/queue-tests.rkt` | Casos de `Queue` (15 checks). |
 | `data_structures_basics-test/info.rkt` | Metadatos de la colección de pruebas. |
 | `data_structures_basics-doc/` | Colección de documentación (Scribble), sin contenido del módulo. |
 | `data_structures_basics/info.rkt` | Metadatos del paquete agregador. |
@@ -74,19 +74,19 @@ raco test -x .
 
 ```text
 $ raco test -x .
-raco test: (submod (file "./data_structures_basics-test/tests/linked_list_tests.rkt") test)
+raco test: (submod (file "./data_structures_basics-test/tests/linked-list-tests.rkt") test)
 (node 10 #f)
 (node 20 #f)
 (node 5 (node 10 (node 20 #f)))
 (node 10 #f)
-raco test: (submod (file "./data_structures_basics-test/tests/node_tests.rkt") test)
+raco test: (submod (file "./data_structures_basics-test/tests/node-tests.rkt") test)
 (node 10 (node 20 #f))
-raco test: (submod (file "./data_structures_basics-test/tests/queue_tests.rkt") test)
+raco test: (submod (file "./data_structures_basics-test/tests/queue-tests.rkt") test)
 (node 10 #f)
 (node 20 #f)
 (node 30 #f)
 (node 40 #f)
-raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") test)
+raco test: (submod (file "./data_structures_basics-test/tests/stack-tests.rkt") test)
 (node 10 #f)
 (node 20 (node 10 #f))
 (node 30 (node 20 (node 10 #f)))
@@ -94,9 +94,9 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 53 tests passed
 ```
 
-**ES:** Salida copiada del acta de evidencia del sprint: `docs/evidence/algorithms/data_structures_basics/racket.md` en el monorepo (veredicto **green**, `test_exit=0`). Las líneas `(node …)` son las instancias `#:transparent` que la REPL imprime al ejecutar los escenarios.
+**ES:** Salida real del runner sobre el árbol actual. El acta de evidencia del sprint (`docs/evidence/algorithms/data_structures_basics/racket.md` en el monorepo) recoge el veredicto **green** con `test_exit=0` y se regenera al cerrar el módulo. Las líneas `(node …)` son las instancias `#:transparent` que la REPL imprime al ejecutar los escenarios.
 
-**EN:** Output copied from the sprint evidence record: `docs/evidence/algorithms/data_structures_basics/racket.md` in the monorepo (verdict **green**, `test_exit=0`). The `(node …)` lines are the `#:transparent` instances printed while the scenarios run.
+**EN:** Real runner output on the current tree. The sprint's evidence record (`docs/evidence/algorithms/data_structures_basics/racket.md` in the monorepo) holds the **green** verdict with `test_exit=0` and is regenerated when the module closes. The `(node …)` lines are the `#:transparent` instances printed while the scenarios run.
 
 ---
 
@@ -106,44 +106,44 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 
 | Operación / Operation | Entrada → salida / Input → output | Complejidad / Complexity | Notas / Notes |
 |---|---|---|---|
-| `node_init` | `Int → node` | `O(1)` | Crea la celda con su valor y el enlace ausente (`#f`). Equivalente a `init(value)`. |
-| `node_get_value` | `node → Int` | `O(1)` | Equivalente a `get_value()`. |
-| `node_get_next` | `node → node o #f` | `O(1)` | Equivalente a `get_next()`; `#f` cuando el enlace está ausente. |
-| `node_set_next` | `node, node → node` | `O(1)` | Muta el enlace y devuelve el propio nodo. Equivalente a `set_next(next)`. |
+| `node-init` | `Int → node` | `O(1)` | Crea la celda con su valor y el enlace ausente (`#f`). Equivalente a `init(value)`. |
+| `node-get-value` | `node → Int` | `O(1)` | Equivalente a `get_value()`. |
+| `node-get-next` | `node → node o #f` | `O(1)` | Equivalente a `get_next()`; `#f` cuando el enlace está ausente. |
+| `node-set-next` | `node, node → node` | `O(1)` | Muta el enlace y devuelve el propio nodo. Equivalente a `set_next(next)`. |
 
 ### LinkedList
 
 | Operación / Operation | Entrada → salida / Input → output | Complejidad / Complexity | Notas / Notes |
 |---|---|---|---|
-| `linked_list_init` | `→ linked_list` | `O(1)` | Lista vacía: cabeza y cola ausentes, contador 0. Equivalente a `init()`. |
-| `linked_list_get_head` | `linked_list → Int o #f` | `O(1)` | Equivalente a `get_head()`; `#f` con la lista vacía. |
-| `linked_list_insert_head` | `linked_list, Int → node` | `O(1)` | Equivalente a `insert_head(value)`; devuelve el nodo insertado. |
-| `linked_list_insert_tail` | `linked_list, Int → node` | `O(1)` | Equivalente a `insert_tail(value)`; el puntero `tail` la hace constante. |
-| `linked_list_delete` | `linked_list, Int → Bool` | `O(n)` | Elimina la primera aparición; `#t` si estaba, `#f` si no. Equivalente a `delete(value)`. |
-| `linked_list_is_empty` | `linked_list → Bool` | `O(1)` | Equivalente a `is_empty()`. |
-| `linked_list_size` | `linked_list → Int` | `O(1)` | Equivalente a `size()`. |
+| `linked-list-init` | `→ linked-list` | `O(1)` | Lista vacía: cabeza y cola ausentes, contador 0. Equivalente a `init()`. |
+| `linked-list-get-head` | `linked-list → Int o #f` | `O(1)` | Equivalente a `get_head()`; `#f` con la lista vacía. |
+| `linked-list-insert-head` | `linked-list, Int → node` | `O(1)` | Equivalente a `insert_head(value)`; devuelve el nodo insertado. |
+| `linked-list-insert-tail` | `linked-list, Int → node` | `O(1)` | Equivalente a `insert_tail(value)`; el puntero `tail` la hace constante. |
+| `linked-list-delete` | `linked-list, Int → Bool` | `O(n)` | Elimina la primera aparición; `#t` si estaba, `#f` si no. Equivalente a `delete(value)`. |
+| `linked-list-is-empty` | `linked-list → Bool` | `O(1)` | Equivalente a `is_empty()`. |
+| `linked-list-size` | `linked-list → Int` | `O(1)` | Equivalente a `size()`. |
 
 ### Stack
 
 | Operación / Operation | Entrada → salida / Input → output | Complejidad / Complexity | Notas / Notes |
 |---|---|---|---|
-| `stack_init` | `→ stack` | `O(1)` | Pila vacía: tope ausente, contador 0. Equivalente a `init()`. |
-| `stack_push` | `stack, Int → node` | `O(1)` | Equivalente a `push(value)`; devuelve el nodo insertado. |
-| `stack_pop` | `stack → Int o #f` | `O(1)` | Extrae el tope; `#f` con la pila vacía. Equivalente a `pop()`. |
-| `stack_peek` | `stack → Int o #f` | `O(1)` | Observa el tope sin extraerlo; `#f` con la pila vacía. Equivalente a `peek()`. |
-| `stack_is_empty` | `stack → Bool` | `O(1)` | Equivalente a `is_empty()`. |
-| `stack_size` | `stack → Int` | `O(1)` | Equivalente a `size()`. |
+| `stack-init` | `→ stack` | `O(1)` | Pila vacía: tope ausente, contador 0. Equivalente a `init()`. |
+| `stack-push` | `stack, Int → node` | `O(1)` | Equivalente a `push(value)`; devuelve el nodo insertado. |
+| `stack-pop` | `stack → Int o #f` | `O(1)` | Extrae el tope; `#f` con la pila vacía. Equivalente a `pop()`. |
+| `stack-peek` | `stack → Int o #f` | `O(1)` | Observa el tope sin extraerlo; `#f` con la pila vacía. Equivalente a `peek()`. |
+| `stack-is-empty` | `stack → Bool` | `O(1)` | Equivalente a `is_empty()`. |
+| `stack-size` | `stack → Int` | `O(1)` | Equivalente a `size()`. |
 
 ### Queue
 
 | Operación / Operation | Entrada → salida / Input → output | Complejidad / Complexity | Notas / Notes |
 |---|---|---|---|
-| `queue_init` | `→ queue` | `O(1)` | Cola vacía: frente y rear ausentes, contador 0. Equivalente a `init()`. |
-| `queue_enqueue` | `queue, Int → node` | `O(1)` | Equivalente a `enqueue(value)`; devuelve el nodo insertado. |
-| `queue_dequeue` | `queue → Int o #f` | `O(1)` | Extrae el frente; `#f` con la cola vacía. Equivalente a `dequeue()`. |
-| `queue_peek` | `queue → Int o #f` | `O(1)` | Observa el frente sin extraerlo; `#f` con la cola vacía. Equivalente a `peek()`. |
-| `queue_is_empty` | `queue → Bool` | `O(1)` | Equivalente a `is_empty()`. |
-| `queue_size` | `queue → Int` | `O(1)` | Equivalente a `size()`. |
+| `queue-init` | `→ queue` | `O(1)` | Cola vacía: frente y rear ausentes, contador 0. Equivalente a `init()`. |
+| `queue-enqueue` | `queue, Int → node` | `O(1)` | Equivalente a `enqueue(value)`; devuelve el nodo insertado. |
+| `queue-dequeue` | `queue → Int o #f` | `O(1)` | Extrae el frente; `#f` con la cola vacía. Equivalente a `dequeue()`. |
+| `queue-peek` | `queue → Int o #f` | `O(1)` | Observa el frente sin extraerlo; `#f` con la cola vacía. Equivalente a `peek()`. |
+| `queue-is-empty` | `queue → Bool` | `O(1)` | Equivalente a `is_empty()`. |
+| `queue-size` | `queue → Int` | `O(1)` | Equivalente a `size()`. |
 
 ---
 
@@ -154,8 +154,8 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 | Structs `#:mutable` con mutadores `set-…!` | Structs inmutables devolviendo copias | El pseudocódigo de la especificación está escrito con asignaciones sobre la misma instancia (`head = node`, `count = count + 1`); los structs mutables lo traducen literalmente y conservan las cotas `O(1)` de `insert_tail` y `enqueue` sin reconstruir cadenas. |
 | `#f` como indicador de fallo y de enlace ausente | `-1` u otro centinela numérico | `#f` no es un entero, así los valores de prueba (enteros positivos) no colisionan con él; es lo que Racket devuelve en sus propias búsquedas (`assoc`, `member`). |
 | Las inserciones devuelven el nodo insertado | Devolver `void` o la estructura | La especificación fija su efecto sobre el tamaño, no su resultado; devolver el nodo da un valor observable útil en la REPL sin contradecir el contrato. |
-| `linked_list_is_empty` consulta la cabeza, no el contador | `(= count 0)` | Observa el invariante estructural directamente: la lista está vacía exactamente cuando no tiene cabeza. El contador sigue siendo la fuente de `size`. |
-| Suite organizada por estructura con ejecutor compartido `check_contract` | `check-equal?` directo en cada caso | Los escenarios son pasos sucesivos sobre la misma instancia; el ejecutor compartido uniforma el mensaje `<sujeto> should <conducta>` y centraliza la forma de comparar. |
+| `linked-list-is-empty` consulta la cabeza, no el contador | `(= count 0)` | Observa el invariante estructural directamente: la lista está vacía exactamente cuando no tiene cabeza. El contador sigue siendo la fuente de `size`. |
+| Suite organizada por estructura con ejecutor compartido `check-contract` | `check-equal?` directo en cada caso | Los escenarios son pasos sucesivos sobre la misma instancia; el ejecutor compartido uniforma el mensaje `<sujeto> should <conducta>` y centraliza la forma de comparar. |
 
 ---
 
@@ -164,9 +164,10 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 | Especificación / Specification | Adaptación / Adaptation | Justificación / Justification |
 |---|---|---|
 | Ubicación esperada `src/` + `test/` | Layout de cuatro colecciones de `raco new pkg` (`-lib`, `-test`, `-doc`, agregador) | Es la convención de paquetes de Racket: cada colección tiene su `info.rkt` y `raco test -x .` descubre los submódulos `test`. El archivo del módulo se llama `data-structures-basics.rkt` (guiones), que es la convención de nombres de Racket. |
-| `init` como operación de la instancia | Funciones `node_init`, `linked_list_init`, `stack_init`, `queue_init` que devuelven la instancia inicializada | El `struct` de Racket no admite campos con valor por defecto: el constructor nativo exigiría pasar los enlaces ausentes. Las funciones `*_init` son el `init` del contrato. |
-| `set_next(next)` actualiza el enlace | `node_set_next` muta con `set-node-next!` y devuelve el nodo | Racket permite mutación explícita en structs `#:mutable`; devolver el nodo hace la función usable en composición. |
-| `delete` devuelve éxito/fallo | `linked_list_delete` devuelve `#t`/`#f` | Booleano nativo; el recorrido conserva el nodo anterior y al borrar el último deja la cola en el anterior, como el pseudocódigo. |
+| `init` como operación de la instancia | Funciones `node-init`, `linked-list-init`, `stack-init`, `queue-init` que devuelven la instancia inicializada | El `struct` de Racket no admite campos con valor por defecto: el constructor nativo exigiría pasar los enlaces ausentes. Las funciones `*-init` son el `init` del contrato. |
+| Operaciones del contrato en `snake_case` (`insert_head`, `pop`) | Identificadores en **kebab-case** (`linked-list-insert-head`, `stack-pop`) | El idioma de Racket es kebab-case para nombres de funciones, variables, parámetros y de archivos de código y tests; el nombre de la especificación se conserva en la prosa del código y en los mensajes de la suite. |
+| `set_next(next)` actualiza el enlace | `node-set-next` muta con `set-node-next!` y devuelve el nodo | Racket permite mutación explícita en structs `#:mutable`; devolver el nodo hace la función usable en composición. |
+| `delete` devuelve éxito/fallo | `linked-list-delete` devuelve `#t`/`#f` | Booleano nativo; el recorrido conserva el nodo anterior y al borrar el último deja la cola en el anterior, como el pseudocódigo. |
 | Indicador de fallo numérico de otras implementaciones (`-1`) | `#f` | Racket no tiene `null`; `#f` es la ausencia nativa y no colisiona con los enteros de prueba. Se declara en _Indicadores de fallo_. |
 | `run_tests` de la especificación | Sin archivo `run_tests`: `raco test -x .` descubre los submódulos `test` de cada archivo | El runner es el propio `raco`; un runner manual duplicaría el descubrimiento. |
 
@@ -176,13 +177,13 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 
 | Operación / Operation | Situación de fallo / Failure situation | Indicador / Indicator | Ejemplo / Example |
 |---|---|---|---|
-| `node_get_next` | Enlace ausente | `#f` | `(node_get_next (node_init 10))` → `#f` |
-| `linked_list_get_head` | Lista vacía | `#f` | `(linked_list_get_head (linked_list_init))` → `#f` |
-| `linked_list_delete` | El valor no está en la lista | `#f` | `(linked_list_delete list 99)` → `#f` (la lista no cambia) |
-| `stack_pop` | Pila vacía | `#f` | `(stack_pop (stack_init))` → `#f` |
-| `stack_peek` | Pila vacía | `#f` | `(stack_peek (stack_init))` → `#f` |
-| `queue_dequeue` | Cola vacía | `#f` | `(queue_dequeue (queue_init))` → `#f` |
-| `queue_peek` | Cola vacía | `#f` | `(queue_peek (queue_init))` → `#f` |
+| `node-get-next` | Enlace ausente | `#f` | `(node-get-next (node-init 10))` → `#f` |
+| `linked-list-get-head` | Lista vacía | `#f` | `(linked-list-get-head (linked-list-init))` → `#f` |
+| `linked-list-delete` | El valor no está en la lista | `#f` | `(linked-list-delete list 99)` → `#f` (la lista no cambia) |
+| `stack-pop` | Pila vacía | `#f` | `(stack-pop (stack-init))` → `#f` |
+| `stack-peek` | Pila vacía | `#f` | `(stack-peek (stack-init))` → `#f` |
+| `queue-dequeue` | Cola vacía | `#f` | `(queue-dequeue (queue-init))` → `#f` |
+| `queue-peek` | Cola vacía | `#f` | `(queue-peek (queue-init))` → `#f` |
 
 **ES:** Las inserciones (`insert_head`, `insert_tail`, `push`, `enqueue`) no tienen resultado de fallo: no hay límite de capacidad. `is_empty` y `size` siempre tienen éxito sobre una instancia inicializada.
 
@@ -194,21 +195,21 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 
 | Caso de la especificación / Specification case | Cubierto / Covered | Prueba / Test | Notas / Notes |
 |---|---|:--:|---|
-| **Node**: inicializar y observar valor/enlace | Sí | `node_tests.rkt` (paso 1, 2 checks) | `get_value` = 10; `get_next` = `#f`. |
-| **Node**: inicializar otro nodo, enlazar y recorrer | Sí | `node_tests.rkt` (paso 2, 2 checks) | Recorrido llega a 20; el enlace de `b` sigue ausente. |
-| **LinkedList**: estado vacío | Sí | `linked_list_tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `get_head` = `#f`. |
-| **LinkedList**: insertar por ambos extremos | Sí | `linked_list_tests.rkt` (paso 2) | `size` = 4, `get_head` = 5. |
-| **LinkedList**: eliminar primera aparición | Sí | `linked_list_tests.rkt` (paso 3) | `delete(10)` = `#t`, cabeza sigue 5, `size` = 3. |
-| **LinkedList**: valor ausente | Sí | `linked_list_tests.rkt` (paso 4) | `delete(99)` = `#f`, recorrido y tamaño no cambian. |
-| **LinkedList**: vaciar | Sí | `linked_list_tests.rkt` (paso 5) | Los tres `delete` tienen éxito; `is_empty` = `#t`, `size` = 0, `get_head` = `#f`. |
-| **Stack**: estado vacío y extracción fallida | Sí | `stack_tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `peek` y `pop` = `#f`. |
-| **Stack**: LIFO y `peek` no mutante | Sí | `stack_tests.rkt` (paso 2) | `peek` = 30, `size` = 3. |
-| **Stack**: extracción y reutilización | Sí | `stack_tests.rkt` (paso 3) | Pops: 30, 40, 20, 10; al final `is_empty` = `#t`, `size` = 0. |
-| **Stack**: vacío tras extracción | Sí | `stack_tests.rkt` (paso 4) | `pop` = `#f`, `is_empty` sigue `#t`. |
-| **Queue**: estado vacío y extracción fallida | Sí | `queue_tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `peek` y `dequeue` = `#f`. |
-| **Queue**: FIFO y `peek` no mutante | Sí | `queue_tests.rkt` (paso 2) | `peek` = 10, `size` = 3. |
-| **Queue**: extracción y reutilización | Sí | `queue_tests.rkt` (paso 3) | Dequeues: 10, 20, 30, 40; al final `is_empty` = `#t`, `size` = 0. |
-| **Queue**: vacío tras extracción | Sí | `queue_tests.rkt` (paso 4) | `dequeue` = `#f`, `is_empty` sigue `#t`. |
+| **Node**: inicializar y observar valor/enlace | Sí | `node-tests.rkt` (paso 1, 2 checks) | `get_value` = 10; `get_next` = `#f`. |
+| **Node**: inicializar otro nodo, enlazar y recorrer | Sí | `node-tests.rkt` (paso 2, 2 checks) | Recorrido llega a 20; el enlace de `b` sigue ausente. |
+| **LinkedList**: estado vacío | Sí | `linked-list-tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `get_head` = `#f`. |
+| **LinkedList**: insertar por ambos extremos | Sí | `linked-list-tests.rkt` (paso 2) | `size` = 4, `get_head` = 5. |
+| **LinkedList**: eliminar primera aparición | Sí | `linked-list-tests.rkt` (paso 3) | `delete(10)` = `#t`, cabeza sigue 5, `size` = 3. |
+| **LinkedList**: valor ausente | Sí | `linked-list-tests.rkt` (paso 4) | `delete(99)` = `#f`, recorrido y tamaño no cambian. |
+| **LinkedList**: vaciar | Sí | `linked-list-tests.rkt` (paso 5) | Los tres `delete` tienen éxito; `is_empty` = `#t`, `size` = 0, `get_head` = `#f`. |
+| **Stack**: estado vacío y extracción fallida | Sí | `stack-tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `peek` y `pop` = `#f`. |
+| **Stack**: LIFO y `peek` no mutante | Sí | `stack-tests.rkt` (paso 2) | `peek` = 30, `size` = 3. |
+| **Stack**: extracción y reutilización | Sí | `stack-tests.rkt` (paso 3) | Pops: 30, 40, 20, 10; al final `is_empty` = `#t`, `size` = 0. |
+| **Stack**: vacío tras extracción | Sí | `stack-tests.rkt` (paso 4) | `pop` = `#f`, `is_empty` sigue `#t`. |
+| **Queue**: estado vacío y extracción fallida | Sí | `queue-tests.rkt` (paso 1) | `is_empty` = `#t`, `size` = 0, `peek` y `dequeue` = `#f`. |
+| **Queue**: FIFO y `peek` no mutante | Sí | `queue-tests.rkt` (paso 2) | `peek` = 10, `size` = 3. |
+| **Queue**: extracción y reutilización | Sí | `queue-tests.rkt` (paso 3) | Dequeues: 10, 20, 30, 40; al final `is_empty` = `#t`, `size` = 0. |
+| **Queue**: vacío tras extracción | Sí | `queue-tests.rkt` (paso 4) | `dequeue` = `#f`, `is_empty` sigue `#t`. |
 
 **ES:** 15 casos de la especificación cubiertos con **53 checks** (4 + 19 + 15 + 15), todos ejecutados en la salida real de la sección de compilación. Caso nulo omitido: Racket no tiene `null` y los escenarios de estado vacío ya verifican el indicador `#f`.
 
@@ -227,19 +228,19 @@ raco test: (submod (file "./data_structures_basics-test/tests/stack_tests.rkt") 
 
 ## 📝 Notas de implementación / Implementation Notes
 
-**ES:** Racket garantiza la optimización de llamadas de cola (TCO), pero este módulo no la necesita: las tres estructuras mantienen punteros (`head`/`tail`, `top`, `front`/`rear`) y un contador, así que todas las operaciones del contrato son `O(1)` salvo `linked_list_delete`, que recorre la cadena una sola vez con un `let loop` nombrado (bucle idiomático de Racket) conservando el nodo anterior.
+**ES:** Racket garantiza la optimización de llamadas de cola (TCO), pero este módulo no la necesita: las tres estructuras mantienen punteros (`head`/`tail`, `top`, `front`/`rear`) y un contador, así que todas las operaciones del contrato son `O(1)` salvo `linked-list-delete`, que recorre la cadena una sola vez con un `let loop` nombrado (bucle idiomático de Racket) conservando el nodo anterior.
 
 El manejo de errores sigue la curva de la Fase 1: sin excepciones. Las lecturas que pueden fallar devuelven el indicador compatible del lenguaje (`#f`) y el flujo continúa; `delete` informa éxito o fallo con un booleano. Los valores de prueba son enteros positivos, así que nunca colisionan con el indicador.
 
-La mutación es explícita y local: solo los mutadores generados por `#:mutable` (`set-node-next!`, `set-linked_list-head!`, …) tocan el estado, y siempre dentro de la operación del contrato correspondiente. Los tests no inspeccionan campos internos: observan únicamente las operaciones del contrato a través del ejecutor `check_contract`.
+La mutación es explícita y local: solo los mutadores generados por `#:mutable` (`set-node-next!`, `set-linked-list-head!`, …) tocan el estado, y siempre dentro de la operación del contrato correspondiente. Los tests no inspeccionan campos internos: observan únicamente las operaciones del contrato a través del ejecutor `check-contract`.
 
 Organización de tests: un archivo por estructura con un submodule `test` que `raco test` descubre solo, más `contract.rkt` compartido. Los escenarios son pasos sucesivos sobre la misma instancia, como pide la especificación: cada paso encadena las operaciones sobre el estado que dejó el anterior.
 
-**EN:** Racket guarantees tail-call optimization (TCO), but this module does not need it: all three structures keep pointers (`head`/`tail`, `top`, `front`/`rear`) and a counter, so every contract operation is `O(1)` except `linked_list_delete`, which walks the chain once with a named `let loop` (Racket's idiomatic loop) keeping the previous node.
+**EN:** Racket guarantees tail-call optimization (TCO), but this module does not need it: all three structures keep pointers (`head`/`tail`, `top`, `front`/`rear`) and a counter, so every contract operation is `O(1)` except `linked-list-delete`, which walks the chain once with a named `let loop` (Racket's idiomatic loop) keeping the previous node.
 
 Error handling follows the Phase 1 curve: no exceptions. Reads that may fail return the language's compatible indicator (`#f`) and flow continues; `delete` reports success or failure with a boolean. Test values are positive integers, so they never collide with the indicator.
 
-Mutation is explicit and local: only the mutators generated by `#:mutable` (`set-node-next!`, `set-linked_list-head!`, …) touch state, always inside the corresponding contract operation. Tests do not inspect internal fields: they observe only contract operations through the `check_contract` runner.
+Mutation is explicit and local: only the mutators generated by `#:mutable` (`set-node-next!`, `set-linked-list-head!`, …) touch state, always inside the corresponding contract operation. Tests do not inspect internal fields: they observe only contract operations through the `check-contract` runner.
 
 Test organization: one file per structure with a `test` submodule that `raco test` discovers on its own, plus the shared `contract.rkt`. Scenarios are successive steps on the same instance, as the specification requires: each step chains operations on the state the previous one left.
 

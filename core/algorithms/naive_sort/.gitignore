@@ -1,2 +1,9 @@
-# Racket compiled artefacts
+*~
+\#*
+.\#*
+*.sw?
+.DS_Store
 compiled/
+/doc/
+coverage
+.dmg
