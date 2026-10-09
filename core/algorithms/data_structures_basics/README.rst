@@ -1,14 +1,14 @@
-.. image:: https://github.com/<username>/<project>/actions/workflows/test.yml/badge.svg
-    :target: https://github.com/<username>/<project>/actions/workflows/test.yml
+.. image:: https://github.com/yorche3/data_structures_basics/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/yorche3/data_structures_basics/actions/workflows/test.yml
 
-.. image:: https://coveralls.io/repos/github/<username>/<project>/badge.svg?branch=main
-    :target: https://coveralls.io/github/<username>/<project>?branch=main
+.. image:: https://coveralls.io/repos/github/yorche3/data_structures_basics/badge.svg?branch=main
+    :target: https://coveralls.io/github/yorche3/data_structures_basics?branch=main
 
-.. image:: https://img.shields.io/badge/documentation-<project>-blue
-    :target: https://docs.racket-lang.org/<project>/index.html
+.. image:: https://img.shields.io/badge/documentation-data_structures_basics-blue
+    :target: https://docs.racket-lang.org/data_structures_basics/index.html
 
-.. image:: https://img.shields.io/badge/wiki-<project>-yellowgreen
-    :target: https://github.com/<username>/<project>/wiki
+.. image:: https://img.shields.io/badge/wiki-data_structures_basics-yellowgreen
+    :target: https://github.com/yorche3/data_structures_basics/wiki
 
 About This Template
 ===================
@@ -61,13 +61,13 @@ Finally, if there are any features in the template that you aren't planning to u
 
 Once you're done with setup, remove all of the above sections (except the badges at the top) from the README. General signposting about your project follows.
 
-<project>
+data_structures_basics
 ===================
 
 Add a description of your project here.
 
-Install it from the `Racket Package Index <https://pkgs.racket-lang.org/package/<project>>`_.
-Read `the documentation <https://docs.racket-lang.org/<project>/index.html>`_ to learn more. See `the Wiki <https://github.com/<username>/<project>/wiki>`_ for community resources and events.
+Install it from the `Racket Package Index <https://pkgs.racket-lang.org/package/data_structures_basics>`_.
+Read `the documentation <https://docs.racket-lang.org/data_structures_basics/index.html>`_ to learn more. See `the Wiki <https://github.com/yorche3/data_structures_basics/wiki>`_ for community resources and events.
 
 "License":
 ==========

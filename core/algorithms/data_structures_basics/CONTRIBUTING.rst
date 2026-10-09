@@ -3,17 +3,17 @@ Contributing
 
 .. contents:: :depth: 2
 
-Installing <project> Locally
+Installing data_structures_basics Locally
 --------------------------------------
 
-<project> will be installed so that it is linked directly to the cloned instance of the Git repo on your local machine. It means that any changes you make there will be reflected in all code on your machine that depends on <project>. Likewise, updating <project> would just be a matter of ``git pull``.
+data_structures_basics will be installed so that it is linked directly to the cloned instance of the Git repo on your local machine. It means that any changes you make there will be reflected in all code on your machine that depends on data_structures_basics. Likewise, updating data_structures_basics would just be a matter of ``git pull``.
 
-Uninstall any version of <project> you already have
+Uninstall any version of data_structures_basics you already have
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
-  raco pkg remove --force <project>
+  raco pkg remove --force data_structures_basics
 
 Install from source
 ^^^^^^^^^^^^^^^^^^^

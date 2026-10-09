@@ -1,7 +1,7 @@
 # Adapted from: http://www.greghendershott.com/2017/04/racket-makefiles.html
 SHELL=/bin/bash
 
-PACKAGE-NAME=<project>
+PACKAGE-NAME=data_structures_basics
 
 DEPS-FLAGS=--check-pkg-deps --unused-pkg-deps
 
@@ -67,7 +67,7 @@ clean:
 
 # Suitable for both day-to-day dev and CI
 test:
-	raco test -exp $(PACKAGE-NAME)-{lib,test,doc}
+	raco test -x .
 
 build+test: build test
 
