@@ -10,7 +10,8 @@ Los módulos de esta fase trabajan sobre **listas inmutables**, que se recorren 
 
 | Módulo | Especificación | Enfoque | Tests | Estado |
 |--------|---------------|---------|:-----:|:------:|
-| [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `racket test/run_tests.rkt` + rackunit | 3 | ✅ |
+| [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `raco test -x .` + rackunit | 3 | ✅ |
+| [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `raco test -x .` + rackunit | 3 | ✅ |
 
 ---
 
@@ -18,13 +19,17 @@ Los módulos de esta fase trabajan sobre **listas inmutables**, que se recorren 
 
 ```text
 algorithms/
-└── naive_sort/                      # 05_Naive_Sort
-    ├── src/
-    │   └── naive_sort.rkt           # 3 funciones del contrato (provide)
-    ├── test/
-    │   ├── naive_sort_tests.rkt     # 3 test-case × 8 checks
-    │   └── run_tests.rkt            # Punto de entrada
-    ├── .gitignore                   # Ignora compiled/
+├── naive_sort/                      # 05_Naive_Sort
+│   ├── naive_sort-lib/              # Código (naive-sort.rkt, 3 funciones)
+│   ├── naive_sort-test/tests/       # Suites (24 checks) + contract.rkt
+│   ├── naive_sort-doc/              # Documentación (Scribble)
+│   ├── Makefile                     # Build estándar de raco new
+│   └── README.md
+└── data_structures_basics/          # 06_Data_Structures_Basics
+    ├── data_structures_basics-lib/  # Código fuente (4 structs, 23 funciones)
+    ├── data_structures_basics-test/ # Suites (53 checks)
+    ├── data_structures_basics-doc/  # Documentación (Scribble)
+    ├── Makefile                     # Build estándar de raco new
     └── README.md
 ```
 
@@ -35,18 +40,18 @@ algorithms/
 | Característica | Descripción |
 |---------------|-------------|
 | **Runtime** | Racket 9.x (`racket`), intérprete con compilación a bytecode (`raco`) |
-| **CLI** | `racket test/run_tests.rkt` desde la raíz del módulo |
-| **Andamiaje** | ✅ Estructura manual (`mkdir -p src test`), la que ya usa [`foundations/numbers/`](../foundations/numbers/); no hay manifiesto de dependencias |
+| **CLI** | `raco test -x .` desde la raíz del módulo |
+| **Andamiaje** | ✅ Layout de cuatro colecciones de `raco new library {module}` (`-lib`, `-test`, `-doc` y agregador), el mismo que usan `naive_sort`, `data_structures_basics`, `numbers` y `calculator`; cada colección lleva su `info.rkt` |
 | **Framework de tests** | rackunit, incluida en la distribución estándar (`(require rackunit)`) |
-| **Runner** | `test/run_tests.rkt` con `run-tests` de `rackunit/text-ui`; la suite se exporta con `provide` para que el runner la ejecute |
-| **Separación** | `src/` (módulo) ↔ `test/` (suites y punto de entrada) |
-| **Carga del módulo** | `(require "../src/{modulo}.rkt")` al inicio de la suite |
+| **Runner** | `raco test -x .`: descubre los archivos con submodule `test` y cuenta sus checks; sin runner manual |
+| **Separación** | `{module}-lib/` (código) ↔ `{module}-test/tests/` (suites) |
+| **Carga del módulo** | `(require "../../{module}-lib/{modulo}.rkt")` al inicio de la suite, por ruta relativa y sin enlazar paquetes |
 | **Modularidad** | `#lang racket` + `(provide …)`; los helpers internos no se exportan |
 | **Iteración** | Recursión con `let loop` (Racket garantiza TCO) y bucles `for`/`do` |
-| **Mutabilidad** | Las listas son inmutables (`list-set` devuelve una lista nueva): los algoritmos devuelven una lista nueva |
-| **Naming** | `kebab-case` en el código (`selection-sort`), con el nombre `snake_case` de la especificación conservado como nombre del `test-case` y en el mensaje del contrato |
+| **Mutabilidad** | Las listas son inmutables: los algoritmos copian la entrada a un vector (`list->vector`), ordenan con `vector-set!` y devuelven una lista nueva (`vector->list`) |
+| **Naming** | `kebab-case` en el código (`selection-sort`), con el nombre `snake_case` de la especificación conservado en el mensaje del contrato |
 | **Nulabilidad** | La lista vacía **es** `null`; el indicador de fallo es `#f`, que distingue la entrada inválida de `'()` |
-| **Verificación estática** | `raco make src/… test/…`: compila a bytecode y no imprime nada si todo está bien |
+| **Verificación estática** | `raco make {module}-lib/… {module}-test/tests/…`: compila a bytecode y no imprime nada si todo está bien |
 | **Artefactos** | `compiled/` (`.zo` y `.dep`) — ignorado por el `.gitignore` del módulo; bórralo antes de una prueba manual sobre una copia, porque un `.zo` heredado puede ocultar cambios del `.rkt` |
 
 ---
@@ -56,7 +61,11 @@ algorithms/
 ```bash
 # Naive Sort Tests
 cd naive_sort
-racket test/run_tests.rkt
+raco test -x .
+
+# Data Structures Basics Tests
+cd data_structures_basics
+raco test -x .
 ```
 
 ---

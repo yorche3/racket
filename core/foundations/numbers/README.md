@@ -1,6 +1,6 @@
 # Numbers — Racket
 
-Implementación de la especificación [04_Numbers](https://yorche3.github.io/programming_languages/core/foundations/04_Numbers/) en **Racket**, con **rackunit** como framework de pruebas unitarias y un `run_tests.rkt` con **rackunit/text-ui** como runner.
+Implementación de la especificación [04_Numbers](https://yorche3.github.io/programming_languages/core/foundations/04_Numbers/) en **Racket**, con un paquete de cuatro colecciones y pruebas con **rackunit** mediante `raco test`.
 
 Tres enfoques de implementación para los mismos 5 algoritmos: **recursivo directo** (`_rec`), **recursivo con acumulador** (`_acc`) e **iterativo** (`_ite`).
 
@@ -8,37 +8,41 @@ Tres enfoques de implementación para los mismos 5 algoritmos: **recursivo direc
 
 ## 📂 Archivos y estructura / Files & Structure
 
-| Archivo | Propósito |
-|---------|-----------|
-| [`src/numbers.rkt`](src/numbers.rkt) | Módulo `numbers` — único archivo con las 15 funciones (3 enfoques × 5 algoritmos) + 4 helpers `_help`. |
-| [`test/recursive_tests.rkt`](test/recursive_tests.rkt) | Suite recursiva: 5 `test-case` (11 checks). |
-| [`test/recursive_with_acc_tests.rkt`](test/recursive_with_acc_tests.rkt) | Suite con acumulador: 5 `test-case` (11 checks). |
-| [`test/iterative_tests.rkt`](test/iterative_tests.rkt) | Suite iterativa: 5 `test-case` (11 checks). |
-| [`test/run_tests.rkt`](test/run_tests.rkt) | Punto de entrada: ejecuta las tres suites con `run-tests`. |
-| [`.gitignore`](.gitignore) | Ignora los artefactos compilados (`compiled/`). |
+| Archivo / Directorio | Propósito / Purpose |
+|---|---|
+| `numbers-lib/numbers.rkt` | Código fuente: las 15 funciones (3 enfoques × 5 algoritmos) + 4 helpers `_help` privados. |
+| `numbers-lib/info.rkt` | Metadatos de la colección de biblioteca. |
+| `numbers-test/tests/contract.rkt` | Ejecutor compartido `check-contract` (envuelve `check-equal?` con el mensaje de la casa). |
+| `numbers-test/tests/recursive_tests.rkt` | Suite recursiva: 5 grupos, 11 checks. |
+| `numbers-test/tests/recursive_with_acc_tests.rkt` | Suite con acumulador: 5 grupos, 11 checks. |
+| `numbers-test/tests/iterative_tests.rkt` | Suite iterativa: 5 grupos, 11 checks. |
+| `numbers-test/info.rkt` | Metadatos de la colección de pruebas. |
+| `numbers-doc/` | Colección de documentación (Scribble), sin contenido del módulo. |
+| `numbers/info.rkt` | Metadatos del paquete agregador. |
+| `Makefile` | Makefile estándar de la comunidad (build, test, docs, cover…). |
+| `.gitignore` | Archivos generados excluidos (`compiled/`, `coverage`, temporales). |
 
-**Estructura de directorios esperada:**
+**ES:** El layout real **se desvía** del que propone la especificación en «Ubicación esperada» (`src/` + `test/`): se usa el layout de cuatro colecciones (`-lib`, `-test`, `-doc` y el agregador), que es la convención de paquetes de Racket. La desviación se justifica en _Adaptaciones idiomáticas_.
+
+**EN:** The real layout **deviates** from the specification's "Expected location" (`src/` + `test/`): it uses the four-collection layout (`-lib`, `-test`, `-doc` and the aggregator), which is Racket's package convention. The deviation is justified under _Idiomatic adaptations_.
 
 ```text
 numbers/
-├── src/
-│   └── numbers.rkt                  # Único archivo: 3 enfoques en 1
-├── test/
-│   ├── recursive_tests.rkt          # Tests: enfoque recursivo
-│   ├── recursive_with_acc_tests.rkt # Tests: enfoque con acumulador
-│   ├── iterative_tests.rkt          # Tests: enfoque iterativo
-│   └── run_tests.rkt                # Punto de entrada
-├── .gitignore
-└── README.md                        # Este archivo
+├── numbers/                         # metapaquete (info.rkt)
+├── numbers-lib/                     # el código (numbers.rkt)
+├── numbers-test/                    # las suites (tests/)
+├── numbers-doc/                     # scribblings
+├── Makefile
+└── .gitignore
 ```
 
 ---
 
 ## 🛠️ Enfoque y construcción / Approach & Build
 
-**ES:** Este proyecto usa el mismo patrón que `calculator`: un módulo Racket con `(provide ...)` y suites **rackunit** definidas con `test-suite`/`test-case` y exportadas con `provide`. El punto de entrada `test/run_tests.rkt` las ejecuta con `run-tests` de **rackunit/text-ui**. Las 15 funciones se organizan en 3 grupos por enfoque:
+**ES:** El módulo se escribió a mano y después se homologó al layout de cuatro colecciones del estándar de Racket del repositorio (`raco new library {module}`), el mismo que usan `data_structures_basics`, `naive_sort` y `calculator`: cada colección lleva su `info.rkt` y el runner es `raco test -x .`. Las 15 funciones se organizan en 3 grupos por enfoque:
 
-**EN:** This project uses the same pattern as `calculator`: a Racket module with `(provide ...)` and **rackunit** suites defined with `test-suite`/`test-case` and exported with `provide`. The `test/run_tests.rkt` entry point executes them with `run-tests` from **rackunit/text-ui**. The 15 functions are organized into 3 groups by approach:
+**EN:** The module was written by hand and later homologated to the repository's Racket standard four-collection layout (`raco new library {module}`), the same one used by `data_structures_basics`, `naive_sort` and `calculator`: each collection carries its `info.rkt` and the runner is `raco test -x .`. The 15 functions are organized into 3 groups by approach:
 
 | Enfoque | Sufijo | Ejemplo | ¿Tiene tests directos? |
 | ------- | ------ | ------- | :---------------------: |
@@ -46,29 +50,37 @@ numbers/
 | Recursivo con acumulador | `_acc` | `fibonacci_acc` | ✅ Sí (TCO garantizada) |
 | Iterativo | `_ite` | `fibonacci_ite` | ✅ Sí |
 
-**Combinación aplicada:** TCO ✅ + iteración ✅ → `_rec` + `_acc` + `_ite` = **3 suites × 5 test-cases = 15 casos que agrupan 33 checks**.
+**Combinación aplicada:** TCO ✅ + iteración ✅ → `_rec` + `_acc` + `_ite` = **3 suites × 5 grupos = 15 casos que agrupan 33 checks**.
 
-**Applied combination:** TCO ✅ + iteration ✅ → `_rec` + `_acc` + `_ite` = **3 suites × 5 test-cases = 15 cases grouping 33 checks**.
+**Applied combination:** TCO ✅ + iteration ✅ → `_rec` + `_acc` + `_ite` = **3 suites × 5 groups = 15 cases grouping 33 checks**.
 
 ### Inicialización / Initialization
 
-1. Crear la estructura de directorios:
+```bash
+# Homologar el módulo al layout de cuatro colecciones
+mkdir -p numbers-lib numbers-test/tests numbers-doc/scribblings numbers
 
-   ```bash
-   mkdir -p racket/core/foundations/numbers/{src,test}
-   ```
-
-2. Escribir `src/numbers.rkt` y las suites en `test/`.
-
-3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
+# Mover el código y las suites a sus colecciones
+mv src/numbers.rkt numbers-lib/numbers.rkt
+mv test/recursive_tests.rkt test/recursive_with_acc_tests.rkt test/iterative_tests.rkt numbers-test/tests/
+rm -rf src test
+```
 
 ---
 
-## 📄 Archivos de configuración clave / Key Configuration Files
+## 📄 Configuración clave / Key Configuration
 
-No se requieren archivos de configuración de build. Las suites importan el módulo con `(require "../src/numbers.rkt")`.
+| Archivo / File | Propósito / Purpose |
+|---|---|
+| `numbers-lib/info.rkt` | Declara la colección de biblioteca y sus dependencias (`base`). |
+| `numbers-test/info.rkt` | Declara la colección de pruebas y su dependencia de `rackunit`. |
+| `Makefile` | Objetivo `test` = `raco test -x .`; el resto son objetivos estándar. |
 
-### `src/numbers.rkt` — Implementación (3 enfoques en 1 archivo)
+**ES:** No hay dependencias externas descargadas: `rackunit` viene con la distribución estándar de Racket. Las suites importan el módulo **por ruta relativa** (`"../../numbers-lib/numbers.rkt"`), así que no hace falta instalar ni enlazar el paquete.
+
+**EN:** No external dependencies are downloaded: `rackunit` ships with the standard Racket distribution. The suites import the module **by relative path** (`"../../numbers-lib/numbers.rkt"`), so no package install or link is needed.
+
+### `numbers-lib/numbers.rkt` — Implementación (3 enfoques en 1 archivo)
 
 **ES:** Cada algoritmo tiene 3 implementaciones con los sufijos `_rec`, `_acc` e `_ite`; los helpers `_help` son privados por convención (no se exportan con `provide`). Por ejemplo, `fibonacci`:
 
@@ -111,48 +123,39 @@ No se requieren archivos de configuración de build. Las suites importan el mód
 
 ### Suites de pruebas — rackunit
 
-**ES:** Tres suites, una por enfoque. Cada suite define un `test-suite` con un `test-case` por función (5 casos); los 11 casos del pseudocódigo viven como `check-equal?` dentro de ellos (33 checks en total). Cada suite se exporta con `(provide ...-suite)` para que el runner la ejecute.
+**ES:** Tres suites, una por enfoque, con un grupo por función (5 grupos) y los 11 casos del pseudocódigo como `check-contract` (33 checks en total). Cada suite declara su escenario en un submodule `test`, que es lo que `raco test` ejecuta; el ejecutor compartido `contract.rkt` es el único punto donde se compara.
 
-**EN:** Three suites, one per approach. Each suite defines a `test-suite` with one `test-case` per function (5 cases); the pseudocode's 11 cases live as `check-equal?`s within them (33 checks in total). Each suite is exported with `(provide ...-suite)` so the runner can execute it.
-
-```racket
-#lang racket
-
-(require rackunit)
-(require "../src/numbers.rkt")
-
-(provide recursive-suite)
-
-(define recursive-suite
-  (test-suite "Recursive Algorithms"
-    (test-case "sum_of_first_n_rec"
-      (check-equal? (sum_of_first_n_rec 0) 0)
-      (check-equal? (sum_of_first_n_rec 3) 6))
-
-    (test-case "fibonacci_rec"
-      (check-equal? (fibonacci_rec 0) 0)
-      (check-equal? (fibonacci_rec 1) 1)
-      (check-equal? (fibonacci_rec 6) 8))
-
-    (test-case "least_common_multiple_rec"
-      (check-equal? (least_common_multiple_rec 4 6) 12)
-      (check-equal? (least_common_multiple_rec 6 8) 24))))
-```
-
-### `test/run_tests.rkt` — Punto de entrada
+**EN:** Three suites, one per approach, with one group per function (5 groups) and the pseudocode's 11 cases as `check-contract` (33 checks in total). Each suite declares its scenario in a `test` submodule, which is what `raco test` executes; the shared `contract.rkt` executor is the only place where the comparison happens.
 
 ```racket
 #lang racket
 
-(require rackunit/text-ui)
-(require "./recursive_tests.rkt")
-(require "./recursive_with_acc_tests.rkt")
-(require "./iterative_tests.rkt")
+(require rackunit
+         "contract.rkt"
+         "../../numbers-lib/numbers.rkt")
 
-(run-tests recursive-suite)
-(run-tests recursive-with-acc-suite)
-(run-tests iterative-suite)
+(module+ test
+  ;; sum_of_first_n_rec
+  (check-contract "sum_of_first_n_rec should be 0 for n = 0" (sum_of_first_n_rec 0) 0)
+  (check-contract "sum_of_first_n_rec should be 6 for n = 3" (sum_of_first_n_rec 3) 6)
+
+  ;; fibonacci_rec
+  (check-contract "fibonacci_rec should be 0 for n = 0" (fibonacci_rec 0) 0)
+  (check-contract "fibonacci_rec should be 1 for n = 1" (fibonacci_rec 1) 1)
+  (check-contract "fibonacci_rec should be 8 for n = 6" (fibonacci_rec 6) 8)
+
+  ;; least_common_multiple_rec
+  (check-contract "least_common_multiple_rec should be 12 for 4 and 6"
+                  (least_common_multiple_rec 4 6) 12)
+  (check-contract "least_common_multiple_rec should be 24 for 6 and 8"
+                  (least_common_multiple_rec 6 8) 24))
 ```
+
+### Sin `run_tests.rkt` / No `run_tests.rkt`
+
+**ES:** El runner manual desapareció: `raco test -x .` descubre los archivos con submodule `test` y los ejecuta. Un `run_tests.rkt` con `run-tests` de `rackunit/text-ui` duplicaría ese descubrimiento.
+
+**EN:** The manual runner is gone: `raco test -x .` discovers the files with a `test` submodule and runs them. A `run_tests.rkt` with `run-tests` from `rackunit/text-ui` would duplicate that discovery.
 
 ---
 
@@ -177,19 +180,21 @@ Desde la raíz del proyecto:
 
 ```bash
 cd racket/core/foundations/numbers
-racket test/run_tests.rkt
+raco test -x .        # equivale a make test
 ```
 
-### Salida esperada / Expected output
+**Salida real / Actual output:**
 
 ```text
-5 success(es) 0 failure(s) 0 error(s) 5 test(s) run
-5 success(es) 0 failure(s) 0 error(s) 5 test(s) run
-5 success(es) 0 failure(s) 0 error(s) 5 test(s) run
+$ raco test -x .
+raco test: (submod (file "./numbers-test/tests/iterative_tests.rkt") test)
+raco test: (submod (file "./numbers-test/tests/recursive_tests.rkt") test)
+raco test: (submod (file "./numbers-test/tests/recursive_with_acc_tests.rkt") test)
+33 tests passed
 ```
 
-> **ES:** Una línea por suite: 15 `test-case` en total (5 por suite) que agrupan los 33 checks del pseudocódigo, todos pasando (equivale al `tests runned 33 / passed 33 / failed 0` de la especificación).
-> **EN:** One line per suite: 15 `test-case`s in total (5 per suite) grouping the pseudocode's 33 checks, all passing (equivalent to the specification's `tests runned 33 / passed 33 / failed 0`).
+> **ES:** Una línea por suite y el total de checks: los 33 del pseudocódigo, todos pasando (equivale al `tests runned 33 / passed 33 / failed 0` de la especificación). `raco test -x .` devuelve código **1** cuando algún caso falla.
+> **EN:** One line per suite plus the check total: the pseudocode's 33, all passing (equivalent to the specification's `tests runned 33 / passed 33 / failed 0`). `raco test -x .` returns exit code **1** when any case fails.
 
 ---
 
@@ -215,10 +220,20 @@ Tail recursion occurs when the recursive call is the last action executed by a f
 - **EN:** The `_ite` functions use `do`, Racket's native imperative loop, with **parallel** variable updates (new variables are computed from the previous values, as in the pseudocode).
 - **ES:** El MCM usa `(/ (* a b) gcd)`; con aritmética exacta de Racket el resultado es un entero exacto (p. ej. `24/2` = `12` exacto).
 - **EN:** LCM uses `(/ (* a b) gcd)`; with Racket's exact arithmetic the result is an exact integer (e.g. `24/2` = exact `12`).
-- **ES:** Cada suite se define con `test-suite`/`test-case` (un caso por función) y se exporta con `provide`; el runner `run_tests.rkt` las ejecuta con `run-tests` de `rackunit/text-ui`.
-- **EN:** Each suite is defined with `test-suite`/`test-case` (one case per function) and exported with `provide`; the `run_tests.rkt` runner executes them with `run-tests` from `rackunit/text-ui`.
+- **ES:** Cada suite declara su escenario en un submodule `module+ test` y el runner es `raco test -x .`, que descubre esos submódulos y cuenta los `check-contract`.
+- **EN:** Each suite declares its scenario in a `module+ test` submodule and the runner is `raco test -x .`, which discovers those submodules and counts the `check-contract`s.
 - **ES:** En `greatest_common_divisor` se usa `modulo` (operador módulo de Racket), legítimo en este algoritmo (la restricción de no usar operadores de módulo aplica solo al módulo `calculator` de la especificación 03).
 - **EN:** `greatest_common_divisor` uses `modulo` (Racket's modulus operator), which is legitimate in this algorithm (the no-modulus-operator restriction applies only to the `calculator` module of specification 03).
+
+---
+
+## 🔀 Adaptaciones idiomáticas / Idiomatic adaptations
+
+| Especificación / Specification | Adaptación / Adaptation | Justificación / Justification |
+|---|---|---|
+| Ubicación esperada `src/` + `test/` | Layout de cuatro colecciones (`-lib`, `-test`, `-doc`, agregador) | Es la convención de paquetes de Racket: cada colección tiene su `info.rkt` y `raco test -x .` descubre los submódulos `test`. |
+| `test/run_tests.ext` | Sin archivo `run_tests`: `raco test -x .` descubre los submódulos `test` de cada archivo | El runner es el propio `raco`; un runner manual duplicaría el descubrimiento. |
+| Mensaje del contrato | `check-contract` en `contract.rkt` con el formato `<sujeto> should <conducta>` | Unifica el mensaje de las tres suites y conserva el nombre de la función en el reporte de fallos. |
 
 ---
 

@@ -11,7 +11,7 @@ biblioteca de tests estándar de Racket (incluida en la distribución oficial).
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
-| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics` |
 
 ---
 
@@ -28,15 +28,19 @@ racket hellouser.rkt
 
 # Calculator Tests
 cd core/foundations/unit_test/calculator
-racket test/run_tests.rkt
+raco test -x .
 
 # Numbers Tests
 cd core/foundations/numbers
-racket test/run_tests.rkt
+raco test -x .
 
 # Naive Sort Tests
 cd core/algorithms/naive_sort
-racket test/run_tests.rkt
+raco test -x .
+
+# Data Structures Basics Tests
+cd core/algorithms/data_structures_basics
+raco test -x .
 ```
 
 ---
@@ -72,22 +76,34 @@ required. Every `.rkt` file starts with `#lang racket`.
 racket <File>.rkt
 ```
 
-### 2. Proyecto con pruebas unitarias (rackunit)
+### 2. Paquete con pruebas unitarias (rackunit)
 
 **ES:** Para proyectos que requieren pruebas unitarias, se usa **rackunit** como
-framework de test. El código fuente se organiza en `src/` y las pruebas en `test/`.
-Racket tiene un sistema de módulos real: `provide` exporta y `require` importa.
-Las suites se definen con `test-suite`/`test-case`, se exportan con `provide` y
-se ejecutan con un `run_tests.rkt` que usa `run-tests` de `rackunit/text-ui`.
+framework de test y el **layout de cuatro colecciones** de la comunidad
+(`{module}/` metapaquete, `{module}-lib/` con el código, `{module}-test/` con las
+suites y `{module}-doc/` con los scribblings), cada una con su `info.rkt`. Racket
+tiene un sistema de módulos real: `provide` exporta y `require` importa; la suite
+importa el módulo **por ruta relativa** (`"../../{module}-lib/{modulo}.rkt"`), así
+que no hace falta instalar ni enlazar paquetes. Cada suite declara su escenario
+en un submodule **`module+ test`** y un `contract.rkt` compartido envuelve
+`check-equal?` con el mensaje de la casa. El runner es **`raco test -x .`**, que
+descubre esos submódulos, sale limpio y devuelve código **1** cuando algún caso
+falla. Lo usan `data_structures_basics`, `naive_sort`, `numbers` y `calculator`.
 
 **EN:** For projects that require unit tests, **rackunit** is used as the test
-framework. Source code goes in `src/` and tests in `test/`. Racket has a real
-module system: `provide` exports and `require` imports. Suites are defined with
-`test-suite`/`test-case`, exported with `provide`, and run with a `run_tests.rkt`
-that uses `run-tests` from `rackunit/text-ui`.
+framework along with the community's **four-collection layout** (`{module}/`
+metapackage, `{module}-lib/` with the code, `{module}-test/` with the suites and
+`{module}-doc/` with the scribblings), each one with its `info.rkt`. Racket has a
+real module system: `provide` exports and `require` imports; the suite imports the
+module **by relative path** (`"../../{module}-lib/{modulo}.rkt"`), so no package
+install or link is needed. Each suite declares its scenario in a **`module+ test`**
+submodule and a shared `contract.rkt` wraps `check-equal?` with the house message.
+The runner is **`raco test -x .`**, which discovers those submodules, prints clean
+output and returns exit code **1** when any case fails. It is used by
+`data_structures_basics`, `naive_sort`, `numbers` and `calculator`.
 
 ```bash
-racket test/run_tests.rkt     # punto de entrada que ejecuta las suites
+raco test -x .                # descubre las suites con submodule test
 ```
 
 ---
