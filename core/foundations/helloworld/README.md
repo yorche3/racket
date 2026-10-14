@@ -8,13 +8,13 @@ Implementación de la especificación [01_Hello_World](https://yorche3.github.io
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`helloworld.rkt`](helloworld.rkt) | Código fuente: imprime `"Hello, World! from Racket!"` en la salida estándar. |
+| [`hello_world.rkt`](hello_world.rkt) | Código fuente: imprime `"Hello, World! from Racket!"` en la salida estándar. |
 
 **Estructura de directorios esperada:**
 
 ```text
 helloworld/
-├── helloworld.rkt  # Código fuente
+├── hello_world.rkt  # Código fuente
 └── README.md       # Este archivo
 ```
 
@@ -34,7 +34,7 @@ helloworld/
    mkdir -p racket/core/foundations/helloworld
    ```
 
-2. Escribir el archivo `helloworld.rkt` con el código fuente.
+2. Escribir el archivo `hello_world.rkt` con el código fuente.
 
 3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
 
@@ -74,7 +74,7 @@ racket --version
 
 ```bash
 cd racket/core/foundations/helloworld
-racket helloworld.rkt
+racket hello_world.rkt
 ```
 
 ### Compilar con `raco make` (opcional) / Compile with `raco make` (optional)
@@ -85,8 +85,8 @@ racket helloworld.rkt
 
 ```bash
 cd racket/core/foundations/helloworld
-raco make helloworld.rkt
-racket helloworld.rkt
+raco make hello_world.rkt
+racket hello_world.rkt
 ```
 
 ### Salida esperada / Expected output
