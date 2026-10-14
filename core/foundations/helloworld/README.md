@@ -47,17 +47,17 @@ No se requieren archivos de configuración de build. El programa se ejecuta dire
 ```racket
 #lang racket
 
-(println "Hello, World! from Racket!")
+(displayln "Hello, World! from Racket!")
 ```
 
 | Elemento | Propósito |
 |----------|-----------|
 | `#lang racket` | Declara el lenguaje del módulo. Debe ser la **primera** línea del archivo; `racket` es el lenguaje completo estándar. |
-| `(println ...)` | Imprime la representación del valor en la salida estándar, seguida de un salto de línea (`\n`). |
+| `(displayln ...)` | Escribe el valor en la salida estándar **sin** comillas, seguido de un salto de línea (`\n`). |
 | `"Hello, World! from Racket!"` | Argumento: la cadena a imprimir. |
 
-> **ES:** `println` imprime la representación impresa del valor; para cadenas, incluye las comillas. Para imprimir la cadena **sin** comillas se usa `displayln` (mismo resultado visual de `print` en otros lenguajes).
-> **EN:** `println` prints the value's printed representation; for strings, it includes the quotes. To print the string **without** quotes, use `displayln` (the same visual result as `print` in other languages).
+> **ES:** `displayln` escribe la cadena tal cual; `println` imprimiría la representación del valor e incluiría comillas alrededor de la cadena.
+> **EN:** `displayln` writes the string as is; `println` would print the value's representation and wrap the string in quotes.
 
 ---
 
@@ -92,11 +92,8 @@ racket hello_world.rkt
 ### Salida esperada / Expected output
 
 ```text
-"Hello, World! from Racket!"
+Hello, World! from Racket!
 ```
-
-> **ES:** Con `println`, la salida incluye las comillas por ser la representación de una cadena.
-> **EN:** With `println`, the output includes the quotes because that is the representation of a string.
 
 ---
 
@@ -104,8 +101,8 @@ racket hello_world.rkt
 
 - **ES:** Racket no requiere una función `main`: el script se ejecuta de arriba a abajo como en lenguajes de scripting.
 - **EN:** Racket does not require a `main` function: the script executes top to bottom like in scripting languages.
-- **ES:** `println` escribe en `stdout` y añade automáticamente un salto de línea.
-- **EN:** `println` writes to `stdout` and automatically appends a newline.
+- **ES:** `displayln` escribe en `stdout` y añade automáticamente un salto de línea.
+- **EN:** `displayln` writes to `stdout` and automatically appends a newline.
 - **ES:** Todo archivo `.rkt` empieza con `#lang <nombre>`; sin esa línea, `racket` lo trata como código del lenguaje base y produce un error de sintaxis en la primera expresión entre paréntesis.
 - **EN:** Every `.rkt` file starts with `#lang <name>`; without that line, `racket` treats it as base language code and raises a syntax error on the first parenthesized expression.
 

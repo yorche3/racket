@@ -1,3 +1,3 @@
 #lang racket
 
-(println "Hello, World! from Racket!")
+(displayln "Hello, World! from Racket!")
