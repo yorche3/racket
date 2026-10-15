@@ -10,13 +10,13 @@ Solicita un nombre al usuario por la entrada estándar (estilo prompt) y saluda.
 
 | Archivo | Propósito |
 |---------|-----------|
-| [`hellouser.rkt`](hellouser.rkt) | Código fuente: solicita un nombre al usuario y saluda. |
+| [`hello_user.rkt`](hello_user.rkt) | Código fuente: solicita un nombre al usuario y saluda. |
 
 **Estructura de directorios esperada:**
 
 ```text
 hellouser/
-├── hellouser.rkt   # Código fuente
+├── hello_user.rkt   # Código fuente
 └── README.md       # Este archivo
 ```
 
@@ -44,7 +44,7 @@ hellouser/
    mkdir -p racket/core/foundations/hellouser
    ```
 
-2. Escribir el archivo `hellouser.rkt` con el código fuente.
+2. Escribir el archivo `hello_user.rkt` con el código fuente.
 
 3. No se necesita ningún paso adicional de construcción o vinculación de dependencias.
 
@@ -100,7 +100,7 @@ racket --version
 
 ```bash
 cd racket/core/foundations/hellouser
-racket hellouser.rkt
+racket hello_user.rkt
 ```
 
 **ES:** El programa muestra el prompt y espera a que escribas tu nombre y presiones Enter.
@@ -113,8 +113,8 @@ Enter your name: Ada
 Hello, Ada!
 ```
 
-> **ES:** También admite entrada redirigida: `printf 'Ada\n' | racket hellouser.rkt` produce el mismo saludo.
-> **EN:** It also accepts redirected input: `printf 'Ada\n' | racket hellouser.rkt` produces the same greeting.
+> **ES:** También admite entrada redirigida: `printf 'Ada\n' | racket hello_user.rkt` produce el mismo saludo.
+> **EN:** It also accepts redirected input: `printf 'Ada\n' | racket hello_user.rkt` produces the same greeting.
 
 ---
 
