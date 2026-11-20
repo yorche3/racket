@@ -67,7 +67,7 @@ clean:
 
 # Suitable for both day-to-day dev and CI
 test:
-	raco test -exp $(PACKAGE-NAME)-{lib,test,doc}
+	raco test -x .
 
 build+test: build test
 

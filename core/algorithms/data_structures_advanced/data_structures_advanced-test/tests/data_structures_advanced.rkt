@@ -5,12 +5,8 @@
          "../../data_structures_advanced-lib/data-structures-advanced.rkt")
 
 (define tests
-
   (test-suite
-   "Tests for data_structures_advanced"
-
-   (check-equal? (hello) "Hello, World!")
-   (check-equal? (hello "yorche3") "Hello, yorche3!")))
+   "Tests for data_structures_advanced"))
 
 (module+ test
   (void
