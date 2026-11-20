@@ -12,6 +12,7 @@ Los módulos de esta fase trabajan sobre **listas inmutables**, que se recorren 
 |--------|---------------|---------|:-----:|:------:|
 | [`naive_sort/`](naive_sort/) | [05_Naive_Sort](https://yorche3.github.io/programming_languages/core/algorithms/05_Naive_Sort/) | `raco test -x .` + rackunit | 3 | ✅ |
 | [`data_structures_basics/`](data_structures_basics/) | [06_Data_Structures_Basics](https://yorche3.github.io/programming_languages/core/algorithms/06_Data_Structures_Basics/) | `raco test -x .` + rackunit | 3 | ✅ |
+| [`data_structures_advanced/`](data_structures_advanced/) | [07_Data_Structures_Advanced](https://yorche3.github.io/programming_languages/core/algorithms/07_Data_Structures_Advanced/) | `raco test -x .` + rackunit | 3 | ✅ |
 
 ---
 
@@ -25,10 +26,16 @@ algorithms/
 │   ├── naive_sort-doc/              # Documentación (Scribble)
 │   ├── Makefile                     # Build estándar de raco new
 │   └── README.md
-└── data_structures_basics/          # 06_Data_Structures_Basics
-    ├── data_structures_basics-lib/  # Código fuente (4 structs, 23 funciones)
-    ├── data_structures_basics-test/ # Suites (53 checks)
-    ├── data_structures_basics-doc/  # Documentación (Scribble)
+├── data_structures_basics/          # 06_Data_Structures_Basics
+│   ├── data_structures_basics-lib/  # Código fuente (4 structs, 23 funciones)
+│   ├── data_structures_basics-test/ # Suites (53 checks)
+│   ├── data_structures_basics-doc/  # Documentación (Scribble)
+│   ├── Makefile                     # Build estándar de raco new
+│   └── README.md
+└── data_structures_advanced/        # 07_Data_Structures_Advanced
+    ├── data_structures_advanced-lib/  # Código fuente (4 structs, 19 funciones)
+    ├── data_structures_advanced-test/ # Suites (158 checks) + contract.rkt
+    ├── data_structures_advanced-doc/  # Documentación (Scribble)
     ├── Makefile                     # Build estándar de raco new
     └── README.md
 ```
@@ -41,7 +48,7 @@ algorithms/
 |---------------|-------------|
 | **Runtime** | Racket 9.x (`racket`), intérprete con compilación a bytecode (`raco`) |
 | **CLI** | `raco test -x .` desde la raíz del módulo |
-| **Andamiaje** | ✅ Layout de cuatro colecciones de `raco new library {module}` (`-lib`, `-test`, `-doc` y agregador), el mismo que usan `naive_sort`, `data_structures_basics`, `numbers` y `calculator`; cada colección lleva su `info.rkt` |
+| **Andamiaje** | ✅ Layout de cuatro colecciones de `raco new library {module}` (`-lib`, `-test`, `-doc` y agregador), el mismo que usan `naive_sort`, `data_structures_basics`, `data_structures_advanced`, `numbers` y `calculator`; cada colección lleva su `info.rkt` |
 | **Framework de tests** | rackunit, incluida en la distribución estándar (`(require rackunit)`) |
 | **Runner** | `raco test -x .`: descubre los archivos con submodule `test` y cuenta sus checks; sin runner manual |
 | **Separación** | `{module}-lib/` (código) ↔ `{module}-test/tests/` (suites) |
@@ -65,6 +72,10 @@ raco test -x .
 
 # Data Structures Basics Tests
 cd data_structures_basics
+raco test -x .
+
+# Data Structures Advanced Tests
+cd data_structures_advanced
 raco test -x .
 ```
 
