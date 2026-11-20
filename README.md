@@ -11,7 +11,7 @@ biblioteca de tests estándar de Racket (incluida en la distribución oficial).
 | Módulo | Descripción |
 | ------ | ----------- |
 | [`core/foundations/`](core/foundations/) | **Fase 0 — Fundamentos**: `helloworld`, `hellouser`, `unit_test/calculator`, `numbers` |
-| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics` |
+| [`core/algorithms/`](core/algorithms/) | **Fase 1 — Algoritmos Puros**: `naive_sort`, `data_structures_basics`, `data_structures_advanced` |
 
 ---
 
@@ -40,6 +40,10 @@ raco test -x .
 
 # Data Structures Basics Tests
 cd core/algorithms/data_structures_basics
+raco test -x .
+
+# Data Structures Advanced Tests
+cd core/algorithms/data_structures_advanced
 raco test -x .
 ```
 
@@ -88,7 +92,7 @@ que no hace falta instalar ni enlazar paquetes. Cada suite declara su escenario
 en un submodule **`module+ test`** y un `contract.rkt` compartido envuelve
 `check-equal?` con el mensaje de la casa. El runner es **`raco test -x .`**, que
 descubre esos submódulos, sale limpio y devuelve código **1** cuando algún caso
-falla. Lo usan `data_structures_basics`, `naive_sort`, `numbers` y `calculator`.
+falla. Lo usan `data_structures_advanced`, `data_structures_basics`, `naive_sort`, `numbers` y `calculator`.
 
 **EN:** For projects that require unit tests, **rackunit** is used as the test
 framework along with the community's **four-collection layout** (`{module}/`
@@ -100,7 +104,7 @@ install or link is needed. Each suite declares its scenario in a **`module+ test
 submodule and a shared `contract.rkt` wraps `check-equal?` with the house message.
 The runner is **`raco test -x .`**, which discovers those submodules, prints clean
 output and returns exit code **1** when any case fails. It is used by
-`data_structures_basics`, `naive_sort`, `numbers` and `calculator`.
+`data_structures_advanced`, `data_structures_basics`, `naive_sort`, `numbers` and `calculator`.
 
 ```bash
 raco test -x .                # descubre las suites con submodule test
